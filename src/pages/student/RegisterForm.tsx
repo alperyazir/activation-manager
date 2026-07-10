@@ -74,17 +74,11 @@ export default function RegisterForm() {
   }
 
   return (
-    <AuthShell>
-      <div className="mb-6 text-center">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white shadow-lg shadow-teal-500/25">
-          <UserPlus className="h-6 w-6" />
-        </div>
-        <h1 className="text-xl font-bold">Öğrenci Bilgi Formu</h1>
-        <p className="mt-1 text-sm text-[var(--color-muted)]">
-          Kod doğrulandı. Lütfen bilgilerinizi girin.
-        </p>
-      </div>
-
+    <AuthShell
+      icon={UserPlus}
+      title="Öğrenci Bilgi Formu"
+      subtitle="Kod doğrulandı. Lütfen bilgilerinizi girin."
+    >
       <Card>
           <CardHeader>
             <CardTitle>Bilgiler</CardTitle>

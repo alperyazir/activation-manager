@@ -4,14 +4,10 @@ import AuthShell from '@/components/layout/AuthShell'
 
 export default function Success() {
   return (
-    <AuthShell>
+    <AuthShell icon={CheckCircle2} title="Kaydınız Tamamlandı">
       <Card>
-        <CardContent className="py-10 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-[var(--color-success)]">
-            <CheckCircle2 className="h-9 w-9" />
-          </div>
-          <h1 className="text-xl font-bold">Kaydınız Tamamlandı</h1>
-          <p className="mt-2 text-sm text-[var(--color-muted)]">
+        <CardContent className="py-8 text-center">
+          <p className="text-sm text-[var(--color-muted)]">
             Kaydınız başarıyla oluşturuldu ve tamamlandı. Aktivasyon kodunuz
             kullanıldı. Teşekkür ederiz!
           </p>

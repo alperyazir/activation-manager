@@ -40,16 +40,11 @@ export default function AdminLogin() {
   }
 
   return (
-    <AuthShell>
-      <div className="mb-6 text-center">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-fg)] text-white shadow-lg">
-          <ShieldCheck className="h-6 w-6" />
-        </div>
-        <h1 className="text-xl font-bold">Yönetim Paneli</h1>
-        <p className="mt-1 text-sm text-[var(--color-muted)]">
-          Devam etmek için giriş yapın
-        </p>
-      </div>
+    <AuthShell
+      icon={ShieldCheck}
+      title="Yönetim Paneli"
+      subtitle="Devam etmek için giriş yapın"
+    >
       <Card>
           <CardContent className="py-6">
             <form onSubmit={handleSubmit}>
