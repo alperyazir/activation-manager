@@ -136,6 +136,18 @@ export interface Database {
         Args: { p_ids: string[] }
         Returns: { deleted: number; skipped: number }
       }
+      list_audit_logs: {
+        Args: { p_limit: number }
+        Returns: Array<{
+          id: string
+          created_at: string
+          action: string
+          target_type: string | null
+          target_id: string | null
+          detail: Record<string, unknown>
+          admin_email: string | null
+        }>
+      }
       list_admins: {
         Args: Record<string, never>
         Returns: Array<{
