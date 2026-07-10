@@ -13,7 +13,6 @@ import {
 import { useAuth } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
-import { Logo } from '@/components/ui/Logo'
 
 const nav = [
   { to: '/admin', end: true, label: 'Kayıtlar', icon: ClipboardList },
@@ -51,27 +50,18 @@ export default function AdminLayout() {
           open ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="flex items-center justify-between border-b px-5 py-4">
-          <div className="flex items-center gap-2.5">
-            <Logo className="h-9 w-9" />
-            <div>
-              <div className="text-sm font-extrabold leading-tight tracking-tight">
-                Voca Tooki
-              </div>
-              <div className="text-xs font-medium text-[var(--color-muted)]">
-                Yönetim Paneli
-              </div>
-            </div>
-          </div>
+        {/* mobil kapatma butonu */}
+        <div className="flex justify-end p-3 lg:hidden">
           <button
-            className="rounded-md p-1 text-[var(--color-muted)] hover:bg-[var(--color-bg)] lg:hidden"
+            className="rounded-md p-1.5 text-[var(--color-muted)] hover:bg-[var(--color-bg)]"
             onClick={() => setOpen(false)}
+            aria-label="Kapat"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3 lg:pt-6">
           {nav.map((item) => (
             <NavLink
               key={item.to}
@@ -80,10 +70,10 @@ export default function AdminLayout() {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 rounded-[var(--radius)] px-3 py-2 text-sm font-medium transition-colors',
+                  'flex items-center gap-3 rounded-[var(--radius)] px-3 py-2.5 text-sm font-medium transition-colors',
                   isActive
-                    ? 'bg-[var(--color-primary)] text-white'
-                    : 'text-[var(--color-fg)] hover:bg-[var(--color-bg)]',
+                    ? 'bg-[var(--color-primary)] text-white shadow-sm shadow-[var(--color-primary)]/20'
+                    : 'text-[var(--color-fg)] hover:bg-[var(--color-surface-2)]',
                 )
               }
             >
@@ -117,7 +107,7 @@ export default function AdminLayout() {
       {/* İçerik */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobil üst bar */}
-        <header className="sticky top-0 z-20 flex items-center gap-3 border-b bg-[var(--color-surface)] px-4 py-3 lg:hidden">
+        <header className="sticky top-0 z-20 flex items-center border-b bg-[var(--color-surface)] px-4 py-3 lg:hidden">
           <button
             className="rounded-md p-1.5 text-[var(--color-fg)] hover:bg-[var(--color-bg)]"
             onClick={() => setOpen(true)}
@@ -125,14 +115,10 @@ export default function AdminLayout() {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <div className="flex items-center gap-2">
-            <Logo className="h-8 w-8" />
-            <span className="text-sm font-extrabold tracking-tight">Voca Tooki</span>
-          </div>
         </header>
 
         <main className="flex-1 overflow-x-hidden">
-          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+          <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
             <Outlet />
           </div>
         </main>

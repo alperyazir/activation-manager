@@ -166,7 +166,7 @@ export default function Registrations() {
       </div>
 
       <Card className="mb-4 p-4">
-        <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <div>
             <FilterLabel>Ad Soyad</FilterLabel>
             <Input
