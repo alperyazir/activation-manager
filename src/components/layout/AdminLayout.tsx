@@ -34,7 +34,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen lg:flex">
+    <div className="min-h-screen">
       {/* Mobil backdrop */}
       {open && (
         <div
@@ -43,10 +43,10 @@ export default function AdminLayout() {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar — her boyutta sabit (ekranda daima görünür) */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r bg-[var(--color-surface)] transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r bg-[var(--color-surface)] transition-transform duration-200 lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full',
         )}
       >
@@ -104,8 +104,8 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      {/* İçerik */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      {/* İçerik — sabit sidebar için sol boşluk */}
+      <div className="flex min-h-screen flex-col lg:ml-64">
         {/* Mobil üst bar */}
         <header className="sticky top-0 z-20 flex items-center border-b bg-[var(--color-surface)] px-4 py-3 lg:hidden">
           <button
