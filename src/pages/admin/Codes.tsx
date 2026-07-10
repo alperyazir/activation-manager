@@ -52,7 +52,10 @@ export default function Codes() {
     const { data } = await supabase
       .from('activation_codes')
       .select('*, registration:student_registrations(first_name, last_name)')
+      // Toplu üretilen kodlar aynı created_at'i paylaşır; durum değişince
+      // (UPDATE) sıra karışmasın diye kararlı ikincil anahtar (id) ekliyoruz.
       .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
     setCodes((data as unknown as CodeWithReg[]) ?? [])
     setLoading(false)
   }, [])

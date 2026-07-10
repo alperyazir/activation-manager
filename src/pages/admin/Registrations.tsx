@@ -54,6 +54,7 @@ export default function Registrations() {
          grade:grades(name), language:languages(name), code:activation_codes(code)`,
       )
       .order('registered_at', { ascending: false })
+      .order('id', { ascending: false })
     setRows((data as unknown as RegRow[]) ?? [])
     setLoading(false)
   }, [])
