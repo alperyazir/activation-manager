@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { supabase, callRpc } from '@/lib/supabase'
 import type { ActivationCode, CodeStatus } from '@/lib/database.types'
-import { formatDateTime, formatDate } from '@/lib/utils'
+import { formatDateTime, formatDate, cn } from '@/lib/utils'
 import { exportToExcel, readCodesFromExcel, downloadCodeTemplate } from '@/lib/excel'
 import { effectiveStatus } from '@/lib/status'
 import { usePagination } from '@/lib/usePagination'
@@ -45,6 +45,9 @@ export default function Codes() {
   const [manualOpen, setManualOpen] = useState(false)
   const [delTarget, setDelTarget] = useState<CodeWithReg | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [bulkDelConfirm, setBulkDelConfirm] = useState(false)
+  const [bulkBusy, setBulkBusy] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const [importMsg, setImportMsg] = useState<string | null>(null)
 
@@ -171,6 +174,58 @@ export default function Codes() {
     load()
   }
 
+  // --- Toplu seçim ---
+  function toggleSelect(id: string) {
+    setSelected((prev) => {
+      const n = new Set(prev)
+      if (n.has(id)) n.delete(id)
+      else n.add(id)
+      return n
+    })
+  }
+  const pageIds = paged.map((c) => c.id)
+  const allPageSelected =
+    pageIds.length > 0 && pageIds.every((id) => selected.has(id))
+  function toggleSelectAllPage() {
+    setSelected((prev) => {
+      const n = new Set(prev)
+      if (allPageSelected) pageIds.forEach((id) => n.delete(id))
+      else pageIds.forEach((id) => n.add(id))
+      return n
+    })
+  }
+  function clearSelection() {
+    setSelected(new Set())
+  }
+
+  async function bulkStatus(status: CodeStatus) {
+    setBulkBusy(true)
+    const { data } = await callRpc('bulk_set_code_status', {
+      p_ids: [...selected],
+      p_status: status,
+    })
+    setBulkBusy(false)
+    setImportMsg(
+      `${data ?? 0} kod ${status === 'active' ? 'aktifleştirildi' : 'pasifleştirildi'}.`,
+    )
+    clearSelection()
+    load()
+  }
+
+  async function bulkDelete() {
+    setBulkBusy(true)
+    const { data } = await callRpc('bulk_delete_codes', { p_ids: [...selected] })
+    setBulkBusy(false)
+    setBulkDelConfirm(false)
+    const r = data as { deleted: number; skipped: number } | null
+    setImportMsg(
+      `${r?.deleted ?? 0} kod silindi` +
+        (r?.skipped ? `, ${r.skipped} atlandı (kullanılmış).` : '.'),
+    )
+    clearSelection()
+    load()
+  }
+
   return (
     <div>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -247,11 +302,60 @@ export default function Codes() {
         </div>
       </Card>
 
+      {selected.size > 0 && (
+        <Card className="mb-4 flex flex-wrap items-center gap-3 border-[var(--color-primary)]/30 bg-[var(--color-surface-2)] p-3">
+          <span className="text-sm font-semibold">
+            {selected.size} kod seçildi
+          </span>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => bulkStatus('active')}
+              disabled={bulkBusy}
+            >
+              <CheckCircle2 className="h-4 w-4" />
+              Aktifleştir
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => bulkStatus('passive')}
+              disabled={bulkBusy}
+            >
+              <Ban className="h-4 w-4" />
+              Pasifleştir
+            </Button>
+            <Button
+              size="sm"
+              variant="danger"
+              onClick={() => setBulkDelConfirm(true)}
+              disabled={bulkBusy}
+            >
+              <Trash2 className="h-4 w-4" />
+              Sil
+            </Button>
+            <Button size="sm" variant="ghost" onClick={clearSelection}>
+              Seçimi Temizle
+            </Button>
+          </div>
+        </Card>
+      )}
+
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-[var(--color-bg)] text-left text-xs uppercase text-[var(--color-muted)]">
               <tr>
+                <th className="px-4 py-3">
+                  <input
+                    type="checkbox"
+                    aria-label="Tümünü seç"
+                    className="h-4 w-4 cursor-pointer rounded accent-[var(--color-primary)]"
+                    checked={allPageSelected}
+                    onChange={toggleSelectAllPage}
+                  />
+                </th>
                 <th className="px-4 py-3">Kod</th>
                 <th className="px-4 py-3">Durum</th>
                 <th className="px-4 py-3">Kullanan</th>
@@ -264,19 +368,34 @@ export default function Codes() {
             <tbody className="divide-y">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center">
+                  <td colSpan={8} className="px-4 py-10 text-center">
                     <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-[var(--color-muted)]">
+                  <td colSpan={8} className="px-4 py-10 text-center text-[var(--color-muted)]">
                     Kod bulunamadı.
                   </td>
                 </tr>
               ) : (
                 paged.map((c) => (
-                  <tr key={c.id} className="hover:bg-[var(--color-bg)]">
+                  <tr
+                    key={c.id}
+                    className={cn(
+                      'hover:bg-[var(--color-bg)]',
+                      selected.has(c.id) && 'bg-[var(--color-surface-2)]',
+                    )}
+                  >
+                    <td className="px-4 py-3">
+                      <input
+                        type="checkbox"
+                        aria-label={`${c.code} seç`}
+                        className="h-4 w-4 cursor-pointer rounded accent-[var(--color-primary)]"
+                        checked={selected.has(c.id)}
+                        onChange={() => toggleSelect(c.id)}
+                      />
+                    </td>
                     <td className="px-4 py-3 font-mono">{c.code}</td>
                     <td className="px-4 py-3">
                       <CodeStatusBadge status={c.eff} />
@@ -374,6 +493,34 @@ export default function Codes() {
               Kalıcı Olarak Sil
             </Button>
             <Button variant="outline" onClick={() => setDelTarget(null)}>
+              Vazgeç
+            </Button>
+          </div>
+        </Modal>
+      )}
+
+      {bulkDelConfirm && (
+        <Modal
+          open
+          onClose={() => setBulkDelConfirm(false)}
+          title="Seçili Kodları Sil"
+        >
+          <p className="text-sm">
+            Seçili <span className="font-semibold">{selected.size} kod</span> kalıcı
+            olarak silinecek. Kullanılmış kodlar (öğrenci kaydına bağlı) atlanır. Bu
+            işlem geri alınamaz.
+          </p>
+          <div className="mt-5 flex gap-2">
+            <Button
+              variant="danger"
+              className="flex-1"
+              onClick={bulkDelete}
+              disabled={bulkBusy}
+            >
+              {bulkBusy && <Loader2 className="h-4 w-4 animate-spin" />}
+              Kalıcı Olarak Sil
+            </Button>
+            <Button variant="outline" onClick={() => setBulkDelConfirm(false)}>
               Vazgeç
             </Button>
           </div>

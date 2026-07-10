@@ -128,6 +128,14 @@ export interface Database {
         Args: { p_id: string }
         Returns: { success: boolean; reason: string }
       }
+      bulk_set_code_status: {
+        Args: { p_ids: string[]; p_status: CodeStatus }
+        Returns: number
+      }
+      bulk_delete_codes: {
+        Args: { p_ids: string[] }
+        Returns: { deleted: number; skipped: number }
+      }
       list_admins: {
         Args: Record<string, never>
         Returns: Array<{
