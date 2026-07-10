@@ -1,5 +1,4 @@
 import { ShieldCheck, KeyRound, CheckCircle2 } from 'lucide-react'
-import { Logo } from '@/components/ui/Logo'
 
 const features = [
   {
@@ -37,16 +36,6 @@ export default function AuthShell({ children }: { children: React.ReactNode }) {
         <div className="pointer-events-none absolute -bottom-24 -left-10 h-80 w-80 -rotate-6 rounded-[3rem] bg-white/[0.07]" />
         <div className="pointer-events-none absolute right-24 bottom-28 h-24 w-24 rotate-6 rounded-3xl bg-white/[0.06]" />
 
-        <div className="relative flex items-center gap-3">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-lg shadow-black/10">
-            <Logo className="h-9 w-9" />
-          </span>
-          <div className="leading-tight">
-            <div className="text-lg font-extrabold tracking-tight">Voca Tooki</div>
-            <div className="text-xs font-medium text-white/70">by DreamEdTech</div>
-          </div>
-        </div>
-
         <div className="relative">
           <h2 className="max-w-sm text-[2rem] font-extrabold leading-[1.15] xl:text-[2.5rem]">
             Öğrenci kaydına hoş geldiniz
@@ -77,16 +66,7 @@ export default function AuthShell({ children }: { children: React.ReactNode }) {
 
       {/* Sağ içerik */}
       <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-4 py-10 lg:min-h-0">
-        <div className="w-full max-w-md">
-          {/* mobilde marka (sol panel gizli) */}
-          <div className="mb-8 flex items-center justify-center gap-2 lg:hidden">
-            <Logo className="h-9 w-9" />
-            <span className="text-base font-extrabold tracking-tight">
-              Voca Tooki
-            </span>
-          </div>
-          {children}
-        </div>
+        <div className="w-full max-w-md">{children}</div>
       </div>
     </div>
   )
