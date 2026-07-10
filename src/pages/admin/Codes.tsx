@@ -9,9 +9,8 @@ import {
   Loader2,
   Plus,
   PlusCircle,
-  Power,
-  PowerOff,
   RefreshCw,
+  Trash2,
   Upload,
 } from 'lucide-react'
 import { supabase, callRpc } from '@/lib/supabase'
@@ -44,6 +43,8 @@ export default function Codes() {
   const [statusFilter, setStatusFilter] = useState('')
   const [genOpen, setGenOpen] = useState(false)
   const [manualOpen, setManualOpen] = useState(false)
+  const [delTarget, setDelTarget] = useState<CodeWithReg | null>(null)
+  const [deleting, setDeleting] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const [importMsg, setImportMsg] = useState<string | null>(null)
 
@@ -143,6 +144,30 @@ export default function Codes() {
   async function toggleStatus(c: ActivationCode) {
     const next: CodeStatus = c.status === 'passive' ? 'active' : 'passive'
     await callRpc('set_code_status', { p_code_id: c.id, p_status: next })
+    load()
+  }
+
+  async function handleDelete() {
+    if (!delTarget) return
+    setDeleting(true)
+    const { data, error } = await callRpc('delete_activation_code', {
+      p_id: delTarget.id,
+    })
+    setDeleting(false)
+    setDelTarget(null)
+    if (error) {
+      setImportMsg('Silme işlemi başarısız.')
+      return
+    }
+    const r = data as { success: boolean; reason: string }
+    if (!r.success) {
+      setImportMsg(
+        r.reason === 'in_use'
+          ? 'Bu kod kullanılmış, silinemez.'
+          : 'Silme işlemi başarısız.',
+      )
+      return
+    }
     load()
   }
 
@@ -264,25 +289,36 @@ export default function Codes() {
                     <td className="px-4 py-3 text-[var(--color-muted)]">
                       {formatDateTime(c.used_at)}
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      {(c.status === 'active' || c.status === 'passive') &&
-                        (c.status === 'passive' ? (
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-1">
+                        {(c.status === 'active' || c.status === 'passive') &&
+                          (c.status === 'passive' ? (
+                            <button
+                              onClick={() => toggleStatus(c)}
+                              title="Aktifleştir"
+                              className="rounded-md p-1.5 text-[var(--color-muted)] hover:bg-emerald-50 hover:text-[var(--color-success)]"
+                            >
+                              <CheckCircle2 className="h-4 w-4" />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => toggleStatus(c)}
+                              title="Pasifleştir"
+                              className="rounded-md p-1.5 text-[var(--color-muted)] hover:bg-amber-50 hover:text-amber-600"
+                            >
+                              <Ban className="h-4 w-4" />
+                            </button>
+                          ))}
+                        {c.status !== 'used' && (
                           <button
-                            onClick={() => toggleStatus(c)}
-                            title="Aktifleştir"
-                            className="rounded-md p-1.5 text-[var(--color-muted)] hover:bg-green-50 hover:text-[var(--color-success)]"
+                            onClick={() => setDelTarget(c)}
+                            title="Kodu sil"
+                            className="rounded-md p-1.5 text-[var(--color-muted)] hover:bg-red-50 hover:text-[var(--color-danger)]"
                           >
-                            <Power className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
-                        ) : (
-                          <button
-                            onClick={() => toggleStatus(c)}
-                            title="Pasifleştir"
-                            className="rounded-md p-1.5 text-[var(--color-muted)] hover:bg-amber-50 hover:text-amber-600"
-                          >
-                            <PowerOff className="h-4 w-4" />
-                          </button>
-                        ))}
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -319,6 +355,29 @@ export default function Codes() {
             load()
           }}
         />
+      )}
+
+      {delTarget && (
+        <Modal open onClose={() => setDelTarget(null)} title="Kodu Sil">
+          <p className="text-sm">
+            <span className="font-mono font-semibold">{delTarget.code}</span> kodu
+            kalıcı olarak silinecek. Bu işlem geri alınamaz.
+          </p>
+          <div className="mt-5 flex gap-2">
+            <Button
+              variant="danger"
+              className="flex-1"
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting && <Loader2 className="h-4 w-4 animate-spin" />}
+              Kalıcı Olarak Sil
+            </Button>
+            <Button variant="outline" onClick={() => setDelTarget(null)}>
+              Vazgeç
+            </Button>
+          </div>
+        </Modal>
       )}
     </div>
   )

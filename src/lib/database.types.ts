@@ -124,6 +124,10 @@ export interface Database {
         Args: { p_code: string; p_expires_at: string | null }
         Returns: { success: boolean; reason: string; code?: string }
       }
+      delete_activation_code: {
+        Args: { p_id: string }
+        Returns: { success: boolean; reason: string }
+      }
       list_admins: {
         Args: Record<string, never>
         Returns: Array<{
