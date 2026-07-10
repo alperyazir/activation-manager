@@ -1,17 +1,32 @@
 @import 'tailwindcss';
 
+/* DreamEdTech marka teması — teal öncelikli, kırmızı/altın aksan */
 @theme {
-  --color-bg: hsl(210 40% 98%);
-  --color-surface: hsl(0 0% 100%);
-  --color-border: hsl(214 32% 91%);
-  --color-muted: hsl(215 16% 47%);
-  --color-fg: hsl(222 47% 11%);
-  --color-primary: hsl(221 83% 53%);
-  --color-primary-fg: hsl(0 0% 100%);
-  --color-success: hsl(142 71% 45%);
-  --color-warning: hsl(38 92% 50%);
-  --color-danger: hsl(0 72% 51%);
-  --radius: 0.625rem;
+  /* Nötrler — hafif teal tint (marka sıcaklığı) */
+  --color-bg: #f1f7f6;
+  --color-surface: #ffffff;
+  --color-surface-2: #f7fbfa;
+  --color-border: #e0ecea;
+  --color-muted: #5c7378;
+  --color-fg: #0f3a44; /* koyu teal ink (logo konturu) */
+
+  /* Marka */
+  --color-primary: #0d888e; /* teal */
+  --color-primary-hover: #0a7378;
+  --color-primary-fg: #ffffff;
+  --color-accent: #16b3b0; /* parlak teal — degrade/vurgu */
+
+  --color-success: #10a37a; /* emerald-teal */
+  --color-warning: #f5a800; /* altın (logo) */
+  --color-danger: #f5333a; /* kırmızı (logo) */
+
+  --radius: 0.75rem;
+  --radius-sm: 0.5rem;
+  --radius-lg: 1.125rem;
+
+  --font-sans:
+    'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, Helvetica, Arial, sans-serif;
 }
 
 @layer base {
@@ -26,9 +41,16 @@
   body {
     background-color: var(--color-bg);
     color: var(--color-fg);
-    font-family:
-      ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
-      Arial, sans-serif;
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-primary) 22%, transparent);
   }
 }

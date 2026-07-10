@@ -2,13 +2,13 @@ import { cn } from '@/lib/utils'
 import type { CodeStatus, RegistrationStatus } from '@/lib/database.types'
 
 const base =
-  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium'
+  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset'
 
 const codeStyles: Record<CodeStatus, string> = {
-  active: 'bg-green-100 text-green-800',
-  used: 'bg-blue-100 text-blue-800',
-  passive: 'bg-gray-100 text-gray-700',
-  expired: 'bg-red-100 text-red-800',
+  active: 'bg-teal-50 text-teal-700 ring-teal-600/20',
+  used: 'bg-slate-100 text-slate-600 ring-slate-500/20',
+  passive: 'bg-gray-100 text-gray-600 ring-gray-500/20',
+  expired: 'bg-red-50 text-red-700 ring-red-600/20',
 }
 
 const codeLabels: Record<CodeStatus, string> = {
@@ -19,8 +19,8 @@ const codeLabels: Record<CodeStatus, string> = {
 }
 
 const regStyles: Record<RegistrationStatus, string> = {
-  pending: 'bg-amber-100 text-amber-800',
-  completed: 'bg-green-100 text-green-800',
+  pending: 'bg-amber-50 text-amber-700 ring-amber-600/20',
+  completed: 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
 }
 
 const regLabels: Record<RegistrationStatus, string> = {

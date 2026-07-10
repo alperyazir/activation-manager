@@ -209,7 +209,7 @@ function RetentionCard() {
           </Button>
         </div>
         {result && (
-          <p className="mt-3 rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-800">
+          <p className="mt-3 rounded-md bg-teal-50 px-3 py-2 text-sm text-teal-800">
             {result}
           </p>
         )}

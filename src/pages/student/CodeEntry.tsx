@@ -42,7 +42,7 @@ export default function CodeEntry() {
   return (
     <AuthShell>
       <div className="mb-8 text-center">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white shadow-lg shadow-blue-500/20">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white shadow-lg shadow-teal-500/25">
           <KeyRound className="h-7 w-7" />
         </div>
         <h1 className="text-2xl font-bold">Aktivasyon Kodu</h1>

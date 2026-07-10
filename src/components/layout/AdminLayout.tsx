@@ -6,7 +6,6 @@ import {
   Settings,
   ScrollText,
   LogOut,
-  GraduationCap,
   Menu,
   X,
   ShieldCheck,
@@ -14,6 +13,7 @@ import {
 import { useAuth } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
+import { Logo } from '@/components/ui/Logo'
 
 const nav = [
   { to: '/admin', end: true, label: 'Kayıtlar', icon: ClipboardList },
@@ -52,13 +52,15 @@ export default function AdminLayout() {
         )}
       >
         <div className="flex items-center justify-between border-b px-5 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-primary)] text-white">
-              <GraduationCap className="h-5 w-5" />
-            </div>
+          <div className="flex items-center gap-2.5">
+            <Logo className="h-9 w-9" />
             <div>
-              <div className="text-sm font-bold leading-tight">Voca Tooki</div>
-              <div className="text-xs text-[var(--color-muted)]">Yönetim</div>
+              <div className="text-sm font-extrabold leading-tight tracking-tight">
+                Voca Tooki
+              </div>
+              <div className="text-xs font-medium text-[var(--color-muted)]">
+                Yönetim Paneli
+              </div>
             </div>
           </div>
           <button
@@ -124,10 +126,8 @@ export default function AdminLayout() {
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--color-primary)] text-white">
-              <GraduationCap className="h-4 w-4" />
-            </div>
-            <span className="text-sm font-bold">Voca Tooki</span>
+            <Logo className="h-8 w-8" />
+            <span className="text-sm font-extrabold tracking-tight">Voca Tooki</span>
           </div>
         </header>
 

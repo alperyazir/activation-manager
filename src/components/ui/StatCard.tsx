@@ -4,12 +4,13 @@ import { Card } from './Card'
 
 type Tone = 'blue' | 'amber' | 'green' | 'gray' | 'red'
 
+// 'blue' → marka teal'i; 'green' → emerald
 const toneStyles: Record<Tone, string> = {
-  blue: 'bg-blue-100 text-blue-700',
-  amber: 'bg-amber-100 text-amber-700',
-  green: 'bg-green-100 text-green-700',
-  gray: 'bg-gray-100 text-gray-600',
-  red: 'bg-red-100 text-red-700',
+  blue: 'bg-teal-50 text-teal-700 ring-teal-600/15',
+  amber: 'bg-amber-50 text-amber-700 ring-amber-600/15',
+  green: 'bg-emerald-50 text-emerald-700 ring-emerald-600/15',
+  gray: 'bg-slate-100 text-slate-600 ring-slate-500/15',
+  red: 'bg-red-50 text-red-700 ring-red-600/15',
 }
 
 export function StatCard({
@@ -24,10 +25,10 @@ export function StatCard({
   tone?: Tone
 }) {
   return (
-    <Card className="flex items-center gap-4 p-4">
+    <Card className="flex items-center gap-4 p-4 transition-shadow hover:shadow-md">
       <span
         className={cn(
-          'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl',
+          'flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ring-1 ring-inset',
           toneStyles[tone],
         )}
       >
@@ -35,7 +36,9 @@ export function StatCard({
       </span>
       <div className="min-w-0">
         <div className="text-xs font-medium text-[var(--color-muted)]">{label}</div>
-        <div className="text-2xl font-bold leading-tight">{value}</div>
+        <div className="text-[1.7rem] font-extrabold leading-tight tracking-tight">
+          {value}
+        </div>
       </div>
     </Card>
   )

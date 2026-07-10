@@ -3,17 +3,17 @@ import { forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-[var(--radius)] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
+  'inline-flex items-center justify-center gap-2 rounded-[var(--radius)] text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:scale-[0.98]',
   {
     variants: {
       variant: {
         primary:
-          'bg-[var(--color-primary)] text-[var(--color-primary-fg)] hover:opacity-90',
+          'bg-[var(--color-primary)] text-[var(--color-primary-fg)] shadow-sm shadow-[var(--color-primary)]/20 hover:bg-[var(--color-primary-hover)]',
         outline:
-          'border bg-[var(--color-surface)] text-[var(--color-fg)] hover:bg-[var(--color-bg)]',
-        ghost: 'text-[var(--color-fg)] hover:bg-[var(--color-bg)]',
-        danger: 'bg-[var(--color-danger)] text-white hover:opacity-90',
-        success: 'bg-[var(--color-success)] text-white hover:opacity-90',
+          'border bg-[var(--color-surface)] text-[var(--color-fg)] hover:bg-[var(--color-surface-2)]',
+        ghost: 'text-[var(--color-fg)] hover:bg-[var(--color-surface-2)]',
+        danger: 'bg-[var(--color-danger)] text-white shadow-sm hover:brightness-95',
+        success: 'bg-[var(--color-success)] text-white shadow-sm hover:brightness-95',
       },
       size: {
         sm: 'h-8 px-3 text-xs',

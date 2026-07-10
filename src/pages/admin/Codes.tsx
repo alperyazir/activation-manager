@@ -187,7 +187,7 @@ export default function Codes() {
       </div>
 
       {importMsg && (
-        <div className="mb-4 rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-800">
+        <div className="mb-4 rounded-md bg-teal-50 px-3 py-2 text-sm text-teal-800">
           {importMsg}
         </div>
       )}

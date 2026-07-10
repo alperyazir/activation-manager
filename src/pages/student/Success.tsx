@@ -7,7 +7,7 @@ export default function Success() {
     <AuthShell>
       <Card>
         <CardContent className="py-10 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-[var(--color-success)]">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-[var(--color-success)]">
             <CheckCircle2 className="h-9 w-9" />
           </div>
           <h1 className="text-xl font-bold">Kaydınız Tamamlandı</h1>
