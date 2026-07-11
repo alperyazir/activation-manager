@@ -1,7 +1,7 @@
 // Edge Function: create-admin
 // Yeni bir yönetici (admin) oluşturur. Auth kullanıcısı service_role ile
 // açılır, ardından public.admins tablosuna eklenir ve işlem loglanır.
-// Yalnızca mevcut bir admin çağırabilir (JWT + is_admin() kontrolü).
+// Yalnızca baş yönetici çağırabilir (JWT + is_super_admin() kontrolü).
 
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 
@@ -35,8 +35,8 @@ Deno.serve(async (req) => {
   const { data: userData } = await caller.auth.getUser()
   if (!userData?.user) return json({ error: 'unauthorized' }, 401)
 
-  const { data: isAdmin, error: adminErr } = await caller.rpc('is_admin')
-  if (adminErr || !isAdmin) return json({ error: 'forbidden' }, 403)
+  const { data: isSuperAdmin, error: adminErr } = await caller.rpc('is_super_admin')
+  if (adminErr || !isSuperAdmin) return json({ error: 'forbidden' }, 403)
 
   // 2) Girdi doğrulama
   let body: { email?: string; password?: string; full_name?: string }

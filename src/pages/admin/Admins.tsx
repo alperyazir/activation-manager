@@ -13,6 +13,7 @@ interface AdminRow {
   full_name: string
   email: string
   active: boolean
+  super_admin: boolean
   created_at: string
 }
 
@@ -89,6 +90,11 @@ export default function Admins() {
                       <span className="flex items-center gap-2">
                         <ShieldCheck className="h-4 w-4 text-[var(--color-primary)]" />
                         {a.full_name}
+                        {a.super_admin && (
+                          <span className="rounded bg-[var(--color-primary)]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[var(--color-primary)]">
+                            Baş Yönetici
+                          </span>
+                        )}
                         {a.user_id === myId && (
                           <span className="rounded bg-[var(--color-bg)] px-1.5 py-0.5 text-[10px] text-[var(--color-muted)]">
                             siz
@@ -112,7 +118,7 @@ export default function Admins() {
                       {formatDate(a.created_at)}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      {a.user_id !== myId && (
+                      {a.user_id !== myId && !a.super_admin && (
                         <Button size="sm" variant="ghost" onClick={() => toggleActive(a)}>
                           {a.active ? 'Pasifleştir' : 'Aktifleştir'}
                         </Button>

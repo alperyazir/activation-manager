@@ -13,6 +13,7 @@ type SignInResult = { ok: true } | { ok: false; reason: 'auth' | 'not_admin' }
 interface AuthState {
   session: Session | null
   isAdmin: boolean
+  isSuperAdmin: boolean
   loading: boolean
   signIn: (email: string, password: string) => Promise<SignInResult>
   signOut: () => Promise<void>
@@ -20,23 +21,28 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | undefined>(undefined)
 
+type AdminCheck = { isAdmin: boolean; isSuperAdmin: boolean }
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  async function checkAdmin(userId: string): Promise<boolean> {
+  async function checkAdmin(userId: string): Promise<AdminCheck> {
     const { data } = await supabase
       .from('admins')
-      .select('user_id')
+      .select('user_id, super_admin')
       .eq('user_id', userId)
       .eq('active', true)
-      .maybeSingle()
-    return !!data
+      .maybeSingle<{ user_id: string; super_admin: boolean }>()
+    return { isAdmin: !!data, isSuperAdmin: !!data?.super_admin }
   }
 
   async function refreshAdmin(s: Session | null) {
-    setIsAdmin(s ? await checkAdmin(s.user.id) : false)
+    const check = s ? await checkAdmin(s.user.id) : { isAdmin: false, isSuperAdmin: false }
+    setIsAdmin(check.isAdmin)
+    setIsSuperAdmin(check.isSuperAdmin)
   }
 
   useEffect(() => {
@@ -64,12 +70,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // senkron ayarla — aksi halde ProtectedRoute isAdmin=false görüp
     // kullanıcıyı login'e geri atıyordu ("iki kez giriş" bug'ı).
     const admin = await checkAdmin(data.user.id)
-    if (!admin) {
+    if (!admin.isAdmin) {
       await supabase.auth.signOut()
       return { ok: false, reason: 'not_admin' }
     }
     setSession(data.session)
     setIsAdmin(true)
+    setIsSuperAdmin(admin.isSuperAdmin)
     return { ok: true }
   }
 
@@ -78,7 +85,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ session, isAdmin, loading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ session, isAdmin, isSuperAdmin, loading, signIn, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   )

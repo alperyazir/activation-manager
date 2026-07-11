@@ -19,3 +19,22 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
   return <>{children}</>
 }
+
+// Yalnızca baş yönetici erişebilir; sıradan yönetici panelin ana sayfasına döner.
+export function SuperAdminRoute({ children }: { children: React.ReactNode }) {
+  const { isSuperAdmin, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-[var(--color-muted)]" />
+      </div>
+    )
+  }
+
+  if (!isSuperAdmin) {
+    return <Navigate to="/admin" replace />
+  }
+
+  return <>{children}</>
+}

@@ -87,9 +87,15 @@ export interface Database {
         Update: Partial<AdminAuditLog>
       }
       admins: {
-        Row: { user_id: string; full_name: string; active: boolean; created_at: string }
-        Insert: { user_id: string; full_name: string; active?: boolean }
-        Update: Partial<{ full_name: string; active: boolean }>
+        Row: {
+          user_id: string
+          full_name: string
+          active: boolean
+          super_admin: boolean
+          created_at: string
+        }
+        Insert: { user_id: string; full_name: string; active?: boolean; super_admin?: boolean }
+        Update: Partial<{ full_name: string; active: boolean; super_admin: boolean }>
       }
     }
     Views: Record<string, never>
@@ -155,8 +161,13 @@ export interface Database {
           full_name: string
           email: string
           active: boolean
+          super_admin: boolean
           created_at: string
         }>
+      }
+      is_super_admin: {
+        Args: Record<string, never>
+        Returns: boolean
       }
       set_admin_active: {
         Args: { p_user_id: string; p_active: boolean }

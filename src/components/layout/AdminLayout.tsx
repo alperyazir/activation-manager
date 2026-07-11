@@ -17,16 +17,19 @@ import { Button } from '@/components/ui/Button'
 const nav = [
   { to: '/admin', end: true, label: 'Kayıtlar', icon: ClipboardList },
   { to: '/admin/codes', label: 'Aktivasyon Kodları', icon: KeyRound },
-  { to: '/admin/admins', label: 'Yöneticiler', icon: ShieldCheck },
+  // superOnly: yalnızca baş yönetici görebilir
+  { to: '/admin/admins', label: 'Yöneticiler', icon: ShieldCheck, superOnly: true },
   { to: '/admin/settings', label: 'Sınıf & Dil', icon: Settings },
   { to: '/admin/logs', label: 'İşlem Logları', icon: ScrollText },
 ]
 
 export default function AdminLayout() {
-  const { signOut, session } = useAuth()
+  const { signOut, session, isSuperAdmin } = useAuth()
   const navigate = useNavigate()
   const email = session?.user.email ?? ''
   const [open, setOpen] = useState(false)
+
+  const visibleNav = nav.filter((item) => !item.superOnly || isSuperAdmin)
 
   async function handleSignOut() {
     await signOut()
@@ -62,7 +65,7 @@ export default function AdminLayout() {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto p-3 lg:pt-6">
-          {nav.map((item) => (
+          {visibleNav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

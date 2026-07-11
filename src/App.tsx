@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from '@/context/AuthContext'
-import ProtectedRoute from '@/components/layout/ProtectedRoute'
+import ProtectedRoute, { SuperAdminRoute } from '@/components/layout/ProtectedRoute'
 import AdminLayout from '@/components/layout/AdminLayout'
 
 import CodeEntry from '@/pages/student/CodeEntry'
@@ -36,7 +36,14 @@ export default function App() {
           >
             <Route index element={<Registrations />} />
             <Route path="codes" element={<Codes />} />
-            <Route path="admins" element={<Admins />} />
+            <Route
+              path="admins"
+              element={
+                <SuperAdminRoute>
+                  <Admins />
+                </SuperAdminRoute>
+              }
+            />
             <Route path="settings" element={<Settings />} />
             <Route path="logs" element={<Logs />} />
           </Route>
