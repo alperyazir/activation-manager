@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Loader2, UserPlus } from 'lucide-react'
+import { CheckCircle2, Loader2 } from 'lucide-react'
 import { supabase, callRpc } from '@/lib/supabase'
 import { codeMessage } from '@/lib/messages'
 import type { Grade, Language } from '@/lib/database.types'
 import { Button } from '@/components/ui/Button'
 import { Input, Select, Field } from '@/components/ui/Input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import AuthShell from '@/components/layout/AuthShell'
+import BrandShell, { MosaicAccent, BrandCard } from '@/components/layout/BrandShell'
 
 export default function RegisterForm() {
   const navigate = useNavigate()
@@ -74,70 +73,82 @@ export default function RegisterForm() {
   }
 
   return (
-    <AuthShell
-      icon={UserPlus}
-      title="Öğrenci Bilgi Formu"
-      subtitle="Kod doğrulandı. Lütfen bilgilerinizi girin."
-    >
-      <Card>
-          <CardHeader>
-            <CardTitle>Bilgiler</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit}>
-              <Field label="Ad">
-                <Input
-                  value={form.first_name}
-                  onChange={(e) => setForm({ ...form, first_name: e.target.value })}
-                  autoFocus
-                />
-              </Field>
-              <Field label="Soyad">
-                <Input
-                  value={form.last_name}
-                  onChange={(e) => setForm({ ...form, last_name: e.target.value })}
-                />
-              </Field>
-              <Field label="Sınıf">
-                <Select
-                  value={form.grade_id}
-                  onChange={(e) => setForm({ ...form, grade_id: e.target.value })}
-                >
-                  <option value="">Seçiniz…</option>
-                  {grades.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.name}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
-              <Field label="Dil">
-                <Select
-                  value={form.language_id}
-                  onChange={(e) => setForm({ ...form, language_id: e.target.value })}
-                >
-                  <option value="">Seçiniz…</option>
-                  {languages.map((l) => (
-                    <option key={l.id} value={l.id}>
-                      {l.name}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
+    <BrandShell>
+      <BrandCard>
+        <MosaicAccent className="mb-6" />
 
-              {error && (
-                <p className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-[var(--color-danger)]">
-                  {error}
-                </p>
-              )}
+        <h1 className="font-display text-[1.7rem] font-extrabold leading-tight tracking-tight text-[var(--color-brand-ink)]">
+          Bilgilerinizi girin
+        </h1>
+        <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-brand-teal-strong)]">
+          <CheckCircle2 className="h-4 w-4" />
+          Kodunuz doğrulandı
+        </p>
 
-              <Button type="submit" size="lg" className="w-full" disabled={loading}>
-                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                Kaydı Tamamla
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-    </AuthShell>
+        <form onSubmit={handleSubmit} className="mt-6">
+          <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+            <Field label="Ad">
+              <Input
+                value={form.first_name}
+                onChange={(e) => setForm({ ...form, first_name: e.target.value })}
+                autoFocus
+              />
+            </Field>
+            <Field label="Soyad">
+              <Input
+                value={form.last_name}
+                onChange={(e) => setForm({ ...form, last_name: e.target.value })}
+              />
+            </Field>
+          </div>
+          <Field label="Sınıf">
+            <Select
+              value={form.grade_id}
+              onChange={(e) => setForm({ ...form, grade_id: e.target.value })}
+            >
+              <option value="">Seçiniz…</option>
+              {grades.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field label="Dil">
+            <Select
+              value={form.language_id}
+              onChange={(e) => setForm({ ...form, language_id: e.target.value })}
+            >
+              <option value="">Seçiniz…</option>
+              {languages.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          {error && (
+            <p
+              role="alert"
+              className="mb-4 rounded-lg bg-[color-mix(in_srgb,var(--color-brand-coral)_12%,white)] px-3 py-2 text-sm font-medium text-[var(--color-brand-ink)]"
+            >
+              {error}
+            </p>
+          )}
+
+          <Button
+            type="submit"
+            variant="brand"
+            size="lg"
+            className="w-full"
+            disabled={loading}
+          >
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+            Kaydı tamamla
+          </Button>
+        </form>
+      </BrandCard>
+    </BrandShell>
   )
 }

@@ -27,6 +27,21 @@
   --font-sans:
     'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
     Roboto, Helvetica, Arial, sans-serif;
+  --font-display:
+    'Bricolage Grotesque', 'Plus Jakarta Sans', ui-sans-serif, system-ui,
+    sans-serif;
+
+  /* Voca Tooki · DreamEducation marka paleti (öğrenci/aktivasyon sayfaları) */
+  --color-brand-ink: #570026; /* bordo — logo wordmark, başlık, ana buton */
+  --color-brand-ink-hover: #73123f;
+  --color-brand-coral: #f65843; /* mozaik aksan */
+  --color-brand-gold: #f7d11e; /* mozaik aksan */
+  --color-brand-teal: #3fb5bf; /* mozaik aksan, odak halkası */
+  --color-brand-teal-strong: #2b98a1;
+  --color-brand-bg: #eef5f6; /* markanın açık teal-tint zemini */
+  --color-brand-surface-2: #f6fafb;
+  --color-brand-border: #d9e6e8;
+  --color-brand-muted: #5a6b6e;
 }
 
 @layer base {
@@ -52,5 +67,25 @@
   }
   ::selection {
     background: color-mix(in srgb, var(--color-primary) 22%, transparent);
+  }
+}
+
+/* Öğrenci kartı — hafif yükselme animasyonu (kurumsal, tek seferlik) */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise-in {
+  animation: rise-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rise-in {
+    animation: none;
   }
 }

@@ -9,6 +9,8 @@ const buttonVariants = cva(
       variant: {
         primary:
           'bg-[var(--color-primary)] text-[var(--color-primary-fg)] shadow-sm shadow-[var(--color-primary)]/20 hover:bg-[var(--color-primary-hover)]',
+        brand:
+          'bg-[var(--color-brand-ink)] text-white shadow-sm shadow-[var(--color-brand-ink)]/25 hover:bg-[var(--color-brand-ink-hover)] focus-visible:ring-[var(--color-brand-teal)]',
         outline:
           'border bg-[var(--color-surface)] text-[var(--color-fg)] hover:bg-[var(--color-surface-2)]',
         ghost: 'text-[var(--color-fg)] hover:bg-[var(--color-surface-2)]',
