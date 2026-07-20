@@ -10,7 +10,7 @@ import {
   X,
 } from 'lucide-react'
 import { supabase, callRpc } from '@/lib/supabase'
-import type { Grade, Language } from '@/lib/database.types'
+import type { Grade, Language, Section } from '@/lib/database.types'
 import { formatDateTime } from '@/lib/utils'
 import { exportToExcel } from '@/lib/excel'
 import { usePagination } from '@/lib/usePagination'
@@ -27,6 +27,7 @@ interface RegRow {
   last_name: string
   registered_at: string
   grade: { name: string } | null
+  section: { name: string } | null
   language: { name: string } | null
   code: { code: string } | null
 }
@@ -35,10 +36,12 @@ export default function Registrations() {
   const [rows, setRows] = useState<RegRow[]>([])
   const [grades, setGrades] = useState<Grade[]>([])
   const [languages, setLanguages] = useState<Language[]>([])
+  const [sections, setSections] = useState<Section[]>([])
   const [loading, setLoading] = useState(true)
 
   const [name, setName] = useState('')
   const [grade, setGrade] = useState('')
+  const [section, setSection] = useState('')
   const [language, setLanguage] = useState('')
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
@@ -51,7 +54,7 @@ export default function Registrations() {
       .from('student_registrations')
       .select(
         `id, first_name, last_name, registered_at,
-         grade:grades(name), language:languages(name), code:activation_codes(code)`,
+         grade:grades(name), section:sections(name), language:languages(name), code:activation_codes(code)`,
       )
       .order('registered_at', { ascending: false })
       .order('id', { ascending: false })
@@ -70,6 +73,11 @@ export default function Registrations() {
       .select('*')
       .order('sort_order')
       .then(({ data }) => setLanguages(data ?? []))
+    supabase
+      .from('sections')
+      .select('*')
+      .order('sort_order')
+      .then(({ data }) => setSections(data ?? []))
     load()
   }, [load])
 
@@ -78,13 +86,14 @@ export default function Registrations() {
       const full = `${r.first_name} ${r.last_name}`.toLocaleLowerCase('tr')
       if (name && !full.includes(name.toLocaleLowerCase('tr'))) return false
       if (grade && r.grade?.name !== grade) return false
+      if (section && r.section?.name !== section) return false
       if (language && r.language?.name !== language) return false
       // Her iki sınır da yerel saatle (from: gün başı, to: gün sonu)
       if (from && new Date(r.registered_at) < new Date(from + 'T00:00:00')) return false
       if (to && new Date(r.registered_at) > new Date(to + 'T23:59:59')) return false
       return true
     })
-  }, [rows, name, grade, language, from, to])
+  }, [rows, name, grade, section, language, from, to])
 
   const stats = useMemo(() => {
     const now = new Date()
@@ -99,13 +108,14 @@ export default function Registrations() {
   const { page, setPage, pageCount, pageSize, total, paged } = usePagination(
     filtered,
     15,
-    `${name}|${grade}|${language}|${from}|${to}`,
+    `${name}|${grade}|${section}|${language}|${from}|${to}`,
   )
 
-  const hasFilters = !!(name || grade || language || from || to)
+  const hasFilters = !!(name || grade || section || language || from || to)
   function clearFilters() {
     setName('')
     setGrade('')
+    setSection('')
     setLanguage('')
     setFrom('')
     setTo('')
@@ -127,6 +137,7 @@ export default function Registrations() {
         { header: 'Ad', value: (r: RegRow) => r.first_name },
         { header: 'Soyad', value: (r: RegRow) => r.last_name },
         { header: 'Sınıf', value: (r: RegRow) => r.grade?.name ?? '' },
+        { header: 'Şube', value: (r: RegRow) => r.section?.name ?? '' },
         { header: 'Dil', value: (r: RegRow) => r.language?.name ?? '' },
         { header: 'Kod', value: (r: RegRow) => r.code?.code ?? '' },
         {
@@ -167,7 +178,7 @@ export default function Registrations() {
       </div>
 
       <Card className="mb-4 p-4">
-        <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           <div>
             <FilterLabel>Ad Soyad</FilterLabel>
             <Input
@@ -183,6 +194,17 @@ export default function Registrations() {
               {grades.map((g) => (
                 <option key={g.id} value={g.name}>
                   {g.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div>
+            <FilterLabel>Şube</FilterLabel>
+            <Select value={section} onChange={(e) => setSection(e.target.value)}>
+              <option value="">Tüm şubeler</option>
+              {sections.map((s) => (
+                <option key={s.id} value={s.name}>
+                  {s.name}
                 </option>
               ))}
             </Select>
@@ -228,6 +250,7 @@ export default function Registrations() {
               <tr>
                 <th className="px-4 py-3">Ad Soyad</th>
                 <th className="px-4 py-3">Sınıf</th>
+                <th className="px-4 py-3">Şube</th>
                 <th className="px-4 py-3">Dil</th>
                 <th className="px-4 py-3">Kod</th>
                 <th className="px-4 py-3">Kayıt Tarihi</th>
@@ -237,13 +260,13 @@ export default function Registrations() {
             <tbody className="divide-y">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-[var(--color-muted)]">
+                  <td colSpan={7} className="px-4 py-10 text-center text-[var(--color-muted)]">
                     <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-[var(--color-muted)]">
+                  <td colSpan={7} className="px-4 py-10 text-center text-[var(--color-muted)]">
                     Kayıt bulunamadı.
                   </td>
                 </tr>
@@ -254,6 +277,7 @@ export default function Registrations() {
                       {r.first_name} {r.last_name}
                     </td>
                     <td className="px-4 py-3">{r.grade?.name ?? '—'}</td>
+                    <td className="px-4 py-3">{r.section?.name ?? '—'}</td>
                     <td className="px-4 py-3">{r.language?.name ?? '—'}</td>
                     <td className="px-4 py-3 font-mono text-xs">{r.code?.code ?? '—'}</td>
                     <td className="px-4 py-3 text-[var(--color-muted)]">

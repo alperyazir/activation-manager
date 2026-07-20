@@ -26,6 +26,16 @@ insert into public.languages (name, sort_order) values
   ('İspanyolca', 4)
 on conflict (name) do nothing;
 
+-- Şubeler
+insert into public.sections (name, sort_order) values
+  ('A', 1),
+  ('B', 2),
+  ('C', 3),
+  ('D', 4),
+  ('E', 5),
+  ('F', 6)
+on conflict (name) do nothing;
+
 -- Yerel demo admin: admin@vocatooki.test / Admin123!
 do $$
 declare

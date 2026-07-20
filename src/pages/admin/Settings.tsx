@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Loader2, Plus, ShieldAlert, Trash2 } from 'lucide-react'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { supabase, callRpc } from '@/lib/supabase'
-import type { Grade, Language } from '@/lib/database.types'
+import type { Grade, Language, Section } from '@/lib/database.types'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -12,14 +12,14 @@ import { Modal } from '@/components/ui/Modal'
 // bu bileşen için tipsiz client kullanıyoruz.
 const db = supabase as unknown as SupabaseClient
 
-type Item = Grade | Language
+type Item = Grade | Language | Section
 
 function ListEditor({
   title,
   table,
 }: {
   title: string
-  table: 'grades' | 'languages'
+  table: 'grades' | 'languages' | 'sections'
 }) {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
@@ -133,13 +133,14 @@ export default function Settings() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Sınıf & Dil Yönetimi</h1>
+        <h1 className="text-2xl font-bold">Sınıf, Şube & Dil Yönetimi</h1>
         <p className="text-sm text-[var(--color-muted)]">
           Öğrenci formundaki seçilebilir listeleri yönetin
         </p>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-3">
         <ListEditor title="Sınıflar" table="grades" />
+        <ListEditor title="Şubeler" table="sections" />
         <ListEditor title="Diller" table="languages" />
       </div>
 

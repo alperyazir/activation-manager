@@ -21,6 +21,14 @@ export interface Language {
   created_at: string
 }
 
+export interface Section {
+  id: string
+  name: string
+  sort_order: number
+  active: boolean
+  created_at: string
+}
+
 export interface CodeBatch {
   id: string
   label: string | null
@@ -49,6 +57,7 @@ export interface StudentRegistration {
   last_name: string
   grade_id: string
   language_id: string
+  section_id: string | null
   status: RegistrationStatus
   registered_at: string
   completed_at: string | null
@@ -70,6 +79,7 @@ export interface Database {
     Tables: {
       grades: { Row: Grade; Insert: Partial<Grade>; Update: Partial<Grade> }
       languages: { Row: Language; Insert: Partial<Language>; Update: Partial<Language> }
+      sections: { Row: Section; Insert: Partial<Section>; Update: Partial<Section> }
       code_batches: { Row: CodeBatch; Insert: Partial<CodeBatch>; Update: Partial<CodeBatch> }
       activation_codes: {
         Row: ActivationCode
@@ -111,6 +121,7 @@ export interface Database {
           p_last_name: string
           p_grade_id: string
           p_language_id: string
+          p_section_id: string
         }
         Returns: { success: boolean; reason: string; registration_id?: string }
       }

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { CheckCircle2, Loader2 } from 'lucide-react'
 import { supabase, callRpc } from '@/lib/supabase'
 import { codeMessage } from '@/lib/messages'
-import type { Grade, Language } from '@/lib/database.types'
+import type { Grade, Language, Section } from '@/lib/database.types'
 import { Button } from '@/components/ui/Button'
 import { Input, Select, Field } from '@/components/ui/Input'
 import BrandShell, { MosaicAccent, BrandCard } from '@/components/layout/BrandShell'
@@ -15,10 +15,12 @@ export default function RegisterForm() {
 
   const [grades, setGrades] = useState<Grade[]>([])
   const [languages, setLanguages] = useState<Language[]>([])
+  const [sections, setSections] = useState<Section[]>([])
   const [form, setForm] = useState({
     first_name: '',
     last_name: '',
     grade_id: '',
+    section_id: '',
     language_id: '',
   })
   const [error, setError] = useState<string | null>(null)
@@ -30,12 +32,14 @@ export default function RegisterForm() {
       return
     }
     ;(async () => {
-      const [{ data: g }, { data: l }] = await Promise.all([
+      const [{ data: g }, { data: l }, { data: s }] = await Promise.all([
         supabase.from('grades').select('*').eq('active', true).order('sort_order'),
         supabase.from('languages').select('*').eq('active', true).order('sort_order'),
+        supabase.from('sections').select('*').eq('active', true).order('sort_order'),
       ])
       setGrades(g ?? [])
       setLanguages(l ?? [])
+      setSections(s ?? [])
     })()
   }, [code, navigate])
 
@@ -46,8 +50,8 @@ export default function RegisterForm() {
       setError('Lütfen ad ve soyad girin.')
       return
     }
-    if (!form.grade_id || !form.language_id) {
-      setError('Lütfen sınıf ve dil seçin.')
+    if (!form.grade_id || !form.section_id || !form.language_id) {
+      setError('Lütfen sınıf, şube ve dil seçin.')
       return
     }
     setLoading(true)
@@ -57,6 +61,7 @@ export default function RegisterForm() {
       p_last_name: form.last_name,
       p_grade_id: form.grade_id,
       p_language_id: form.language_id,
+      p_section_id: form.section_id,
     })
     setLoading(false)
 
@@ -101,19 +106,34 @@ export default function RegisterForm() {
               />
             </Field>
           </div>
-          <Field label="Sınıf">
-            <Select
-              value={form.grade_id}
-              onChange={(e) => setForm({ ...form, grade_id: e.target.value })}
-            >
-              <option value="">Seçiniz…</option>
-              {grades.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.name}
-                </option>
-              ))}
-            </Select>
-          </Field>
+          <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+            <Field label="Sınıf">
+              <Select
+                value={form.grade_id}
+                onChange={(e) => setForm({ ...form, grade_id: e.target.value })}
+              >
+                <option value="">Seçiniz…</option>
+                {grades.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field label="Şube">
+              <Select
+                value={form.section_id}
+                onChange={(e) => setForm({ ...form, section_id: e.target.value })}
+              >
+                <option value="">Seçiniz…</option>
+                {sections.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          </div>
           <Field label="Dil">
             <Select
               value={form.language_id}

@@ -8,6 +8,7 @@ export const codeReasonMessages: Record<string, string> = {
   invalid_name: 'Lütfen ad ve soyad bilgisini eksiksiz girin.',
   invalid_grade: 'Lütfen geçerli bir sınıf seçin.',
   invalid_language: 'Lütfen geçerli bir dil seçin.',
+  invalid_section: 'Lütfen geçerli bir şube seçin.',
   rate_limited: 'Çok fazla deneme yapıldı. Lütfen bir dakika sonra tekrar deneyin.',
 }
 
