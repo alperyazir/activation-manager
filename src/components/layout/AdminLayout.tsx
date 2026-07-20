@@ -53,10 +53,17 @@ export default function AdminLayout() {
           open ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        {/* mobil kapatma butonu */}
-        <div className="flex justify-end p-3 lg:hidden">
+        {/* Marka logosu — sidebar başlığı */}
+        <div className="flex h-16 shrink-0 items-center justify-between border-b px-5">
+          <img
+            src="/dream-education-logo.svg"
+            alt="Dream Education"
+            draggable={false}
+            className="h-7 w-auto select-none"
+          />
+          {/* mobil kapatma butonu */}
           <button
-            className="rounded-md p-1.5 text-[var(--color-muted)] hover:bg-[var(--color-bg)]"
+            className="rounded-md p-1.5 text-[var(--color-muted)] hover:bg-[var(--color-bg)] lg:hidden"
             onClick={() => setOpen(false)}
             aria-label="Kapat"
           >
@@ -64,7 +71,7 @@ export default function AdminLayout() {
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto p-3 lg:pt-6">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3 lg:pt-4">
           {visibleNav.map((item) => (
             <NavLink
               key={item.to}
