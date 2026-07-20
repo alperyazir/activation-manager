@@ -1,0 +1,16 @@
+# Supabase Keep-Alive — Cloudflare Worker (Cloudflare Pages'ten bağımsız ayrı Worker)
+# Günde bir kez Supabase'e gerçek bir DB sorgusu atarak Free tier pause'unu önler.
+# Kullanılan anahtar publishable/anon — zaten frontend'de public, gizli değil;
+# bu yüzden doğrudan [vars] içinde tutmak güvenli (secret gerekmez).
+
+name = "supabase-keep-alive"
+main = "src/index.js"
+compatibility_date = "2026-07-20"
+
+# Cloudflare cron UTC'dir. 06:00 UTC = 09:00 TR. Günde 1 kez, 7 günlük limit için bol.
+[triggers]
+crons = ["0 6 * * *"]
+
+[vars]
+SUPABASE_URL = "https://rarpucwiyzawfzbitkci.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_J_aAcytHHonxoyAHtGvR2Q_h6rsRid4"
